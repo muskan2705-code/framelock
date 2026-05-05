@@ -1,0 +1,74 @@
+/* ── FRAMELOCK · GESTURE PUZZLE BATTLE ─────────────────────────────────── */
+/* All layout/screen styles live in index.html <style> for co-location.     */
+/* This file holds only supplemental rules and animation keyframes.         */
+
+:root {
+  --bg: #050810;
+  --surface: #0a0f1e;
+  --p1: #00ffe7;
+  --p1-dim: rgba(0,255,231,0.15);
+  --p1-glow: 0 0 20px rgba(0,255,231,0.6), 0 0 60px rgba(0,255,231,0.2);
+  --p2: #ff00aa;
+  --p2-dim: rgba(255,0,170,0.15);
+  --p2-glow: 0 0 20px rgba(255,0,170,0.6), 0 0 60px rgba(255,0,170,0.2);
+  --text: #c8d8f0;
+  --text-dim: #4a5a7a;
+  --border: rgba(255,255,255,0.06);
+  --font-display: 'Orbitron', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.hidden { display: none !important; }
+
+/* Camera canvas fills the full game-main area */
+#camera-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Capture flash */
+.capture-flash { animation: flash 0.3s ease; }
+@keyframes flash {
+  0%   { filter: brightness(3); }
+  100% { filter: brightness(1); }
+}
+
+/* Confetti */
+.confetti-particle {
+  position: absolute;
+  width: 8px; height: 8px;
+  top: -10px;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* Status badge colours */
+.status-capturing { color: #ffaa00 !important; }
+.status-solving   { color: #fff !important; }
+.status-done      { color: #fff !important; }
+
+/* Countdown pop animation (used by canvas overlays via class toggle if needed) */
+@keyframes countPop {
+  0%   { transform: scale(2); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { transform: scale(1); opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Tile correct flash */
+@keyframes tileCorrect {
+  0%   { filter: brightness(1.5) saturate(2); }
+  100% { filter: brightness(1)   saturate(1); }
+}
