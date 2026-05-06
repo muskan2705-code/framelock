@@ -121,7 +121,7 @@ export function handBounds(lms: Landmark[]): { x: number; y: number; w: number; 
   return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
 }
 
-// Midpoint of wrist landmark for quick x-position comparison
-export function handCenterX(lms: Landmark[]): number {
-  return lms[LM.WRIST].x;
+// Midpoint of wrist landmark for quick position comparison
+export function handCenterX(lms: Landmark[], dim: 'x' | 'y' = 'x'): number {
+  return lms[LM.WRIST][dim];
 }

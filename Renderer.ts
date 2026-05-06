@@ -32,6 +32,7 @@ export class Renderer {
     p2Stable:   number,
     p1Pinch:    PinchState | null,
     p2Pinch:    PinchState | null,
+    orientation: 'landscape' | 'portrait'
   ): void {
     const w   = this.camCanvas.width;
     const h   = this.camCanvas.height;
@@ -44,13 +45,17 @@ export class Renderer {
     ctx.drawImage(video, 0, 0, w, h);
     ctx.restore();
 
-    // Half-screen separator
+    // Zone separator
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(w / 2 - 1, 0, 2, h);
-
-    // Zone labels
-    this.drawLabel(ctx, 'P1', 20,      20, P1_COLOR);
-    this.drawLabel(ctx, 'P2', w - 48,  20, P2_COLOR);
+    if (orientation === 'portrait') {
+      ctx.fillRect(0, h / 2 - 1, w, 2); // Horizontal separator
+      this.drawLabel(ctx, 'P1', 20, 20, P1_COLOR);
+      this.drawLabel(ctx, 'P2', 20, h / 2 + 10, P2_COLOR);
+    } else {
+      ctx.fillRect(w / 2 - 1, 0, 2, h); // Vertical separator
+      this.drawLabel(ctx, 'P1', 20, 20, P1_COLOR);
+      this.drawLabel(ctx, 'P2', w - 48, 20, P2_COLOR);
+    }
 
     // Hand skeleton
     for (const lms of handResults.landmarks) {

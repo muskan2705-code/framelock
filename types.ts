@@ -50,6 +50,7 @@ export interface GameState {
   phase: GamePhase;
   players: [PlayerState, PlayerState];
   winner: 1 | 2 | null;
+  orientation: 'landscape' | 'portrait';
 }
 
 // MediaPipe landmark (normalized 0-1)

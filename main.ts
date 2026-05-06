@@ -42,7 +42,21 @@ let state: GameState = {
   phase: 'idle',
   players: [makePlayer(1), makePlayer(2)],
   winner: null,
+  orientation: 'landscape'
 };
+
+function checkOrientation(): void {
+  const portrait = window.innerHeight > window.innerWidth;
+  const newOrientation = portrait ? 'portrait' : 'landscape';
+  
+  if (state.orientation !== newOrientation) {
+    state.orientation = newOrientation;
+    // Swap dimensions for portrait
+    const w = portrait ? 360 : 640;
+    const h = portrait ? 640 : 360;
+    renderer.resize(w, h);
+  }
+}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 async function boot(): Promise<void> {
@@ -83,14 +97,17 @@ async function startGame(): Promise<void> {
     document.getElementById('retry-btn')!.onclick = () => location.reload();
     return;
   }
-  renderer.resize(CANVAS_W, CANVAS_H);
+  checkOrientation();
   resetState();
   gameRunning = true;
   loop();
 }
 
 function resetState(): void {
-  state = { phase: 'gesture_capture', players: [makePlayer(1), makePlayer(2)], winner: null };
+  state = { ...state, phase: 'gesture_capture', winner: null };
+  // Reset players but keep orientation
+  state.players = [makePlayer(1), makePlayer(2)];
+  
   p1PrevRect = null;
   p2PrevRect = null;
   p1WasPinching = false;
@@ -107,12 +124,14 @@ async function loop(): Promise<void> {
   if (!gameRunning) return;
   const now = Date.now();
 
+  checkOrientation();
+
   if (tracker.isLoaded() && camera.ready) {
     await tracker.detect(camera.videoEl);
   }
 
   const hands  = tracker.getLatest();
-  const { p1Hands, p2Hands } = assignHandsToPlayers(hands.landmarks);
+  const { p1Hands, p2Hands } = assignHandsToPlayers(hands.landmarks, state.orientation);
   const p1 = state.players[0];
   const p2 = state.players[1];
 
@@ -145,7 +164,7 @@ async function loop(): Promise<void> {
   const p2Progress = p2.status === 'countdown' ? Math.min(p2.gestureStableMs / STABLE_DURATION_MS, 1) : 0;
 
   // ── Draw ──────────────────────────────────────────────────────────────────
-  renderer.drawCameraFrame(camera.videoEl, hands, p1Frame, p2Frame, p1Progress, p2Progress, p1Pinch, p2Pinch);
+  renderer.drawCameraFrame(camera.videoEl, hands, p1Frame, p2Frame, p1Progress, p2Progress, p1Pinch, p2Pinch, state.orientation);
 
   // Puzzle overlays on top of camera canvas
   if (p1.status === 'solving' || p1.status === 'completed') renderer.renderPuzzleOverlay(p1);

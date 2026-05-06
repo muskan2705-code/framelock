@@ -398,9 +398,40 @@
       100% { filter: brightness(1) }
     }
 
-    .status-capturing { color: #ffaa00 !important }
-    .status-solving   { color: #fff !important }
-    .status-done      { color: #fff !important }
+    /* ── MOBILE / PORTRAIT ───────────────────────────────────────────────────── */
+    @media (max-width: 600px), (orientation: portrait) {
+      .game-header {
+        padding: 8px 16px;
+        height: 50px;
+      }
+      .game-main {
+        flex-direction: column;
+      }
+      .arena-divider {
+        width: 100%;
+        height: 20px;
+        flex-direction: row;
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .divider-line {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--text-dim), transparent);
+      }
+      .divider-vs {
+        writing-mode: horizontal-tb;
+        padding: 0 16px;
+      }
+      .p2-zone {
+        flex-direction: column-reverse;
+      }
+      .p2-zone .camera-area {
+        transform: rotate(180deg); /* Flip P2 view for face-to-face on phone */
+      }
+    }
   </style>
 </head>
 
@@ -492,7 +523,7 @@
 
   </div>
 
-  <script type="module" src="/main.ts"></script>
+  <script type="module" src="./main.ts"></script>
 </body>
 
 </html>

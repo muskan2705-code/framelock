@@ -18,16 +18,23 @@ export interface PinchState {
 
 export function mirrorX(x: number): number { return 1 - x; }
 
-// Split hands by mirrored x-position: left half = P1, right half = P2
+// Split hands by mirrored position: landscape=L/R, portrait=T/B
 export function assignHandsToPlayers(
-  landmarks: Landmark[][]
+  landmarks: Landmark[][],
+  orientation: 'landscape' | 'portrait'
 ): { p1Hands: Landmark[][]; p2Hands: Landmark[][] } {
   const p1Hands: Landmark[][] = [];
   const p2Hands: Landmark[][] = [];
   for (const hand of landmarks) {
-    const mx = mirrorX(handCenterX(hand));
-    if (mx < 0.5) p1Hands.push(hand);
-    else          p2Hands.push(hand);
+    if (orientation === 'portrait') {
+      const y = handCenterX(hand, 'y'); // 0=top, 1=bottom
+      if (y < 0.5) p1Hands.push(hand);  // P1 on Top
+      else         p2Hands.push(hand);  // P2 on Bottom
+    } else {
+      const mx = mirrorX(handCenterX(hand)); // 0=left, 1=right
+      if (mx < 0.5) p1Hands.push(hand);  // P1 on Left
+      else          p2Hands.push(hand);  // P2 on Right
+    }
   }
   return { p1Hands, p2Hands };
 }
